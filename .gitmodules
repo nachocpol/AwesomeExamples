@@ -1,0 +1,3 @@
+[submodule "depen/AwesomeEngine"]
+	path = depen/AwesomeEngine
+	url = https://github.com/nachocpol/AwesomeEngine
