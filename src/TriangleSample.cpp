@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include "Core/EntryPoint.h"
-#include "Core/App/AppBase.h"
-#include "Core/Logging.h"
-#include "Graphics/GraphicsInterface.h"
-#include "Graphics/Platform/BaseWindow.h"
-#include "Graphics/UI/UIInterface.h"
-#include "Graphics/VertexDescription.h"
+#include "AwesomeEngine/Source/Core/EntryPoint.h"
+#include "AwesomeEngine/Source/Core/App/AppBase.h"
+#include "AwesomeEngine/Source/Core/Logging.h"
+#include "AwesomeEngine/Source/Graphics/GraphicsInterface.h"
+#include "AwesomeEngine/Source/Graphics/Platform/BaseWindow.h"
+#include "AwesomeEngine/Source/Graphics/VertexDescription.h"
+#include "AwesomeEngine/Source/Core/FileSystem.h"
 
 using namespace Graphics;
 struct Vertex
@@ -32,6 +32,11 @@ void TriangleApp::Init()
 {
 	AppBase::Init();
 	
+	Core::FileDevice exampleFileSystem;
+	exampleFileSystem.Identifier = "shadersrc";
+	exampleFileSystem.RootPath = "../../src/shaders/";
+	Core::FileSystem::GetInstance()->AddFileDevice(exampleFileSystem);
+
 	Vertex arr[3] =
 	{
 		-0.5f, -0.5f, 0.5f,   1.0f, 0.0f, 0.0f,
@@ -42,11 +47,11 @@ void TriangleApp::Init()
 	{
 		GraphicsPipelineDescription pdesc = {};
 		pdesc.PixelShader.ShaderEntryPoint = "PSSimple";
-		pdesc.PixelShader.ShaderPath = "shadersrc:Samples/TriangleSample.hlsl";
+		pdesc.PixelShader.ShaderPath = "shadersrc:TriangleSample.hlsl";
 		pdesc.PixelShader.Type = ShaderType::Pixel;
 
 		pdesc.VertexShader.ShaderEntryPoint = "VSSimple";
-		pdesc.VertexShader.ShaderPath = "shadersrc:Samples/TriangleSample.hlsl";
+		pdesc.VertexShader.ShaderPath = "shadersrc:TriangleSample.hlsl";
 		pdesc.VertexShader.Type = ShaderType::Vertex;
 		pdesc.VertexDescription = PosColorVertexDescription::GetDescription();
 
@@ -66,9 +71,6 @@ void TriangleApp::Update()
 	m_GraphicsInterface->SetGraphicsPipeline(m_Pipeline);
 	m_GraphicsInterface->SetVertexBuffer(m_VertexBuffer, 3, sizeof(Vertex));
 	m_GraphicsInterface->Draw(3, 0);
-
-	ImGui::Begin("Paco");
-	ImGui::End();
 }
 
 void TriangleApp::Release()

@@ -1,16 +1,14 @@
-#include "Core/App/AppBase.h"
-#include "Core/EntryPoint.h"
-#include "Core/FileSystem.h"
-#include "Core/Logging.h"
-#include "Core/Util/OBJLoader.h"
-#include "Core/Util/TextureLoader.h"
+#include "AwesomeEngine/Source/Core/App/AppBase.h"
+#include "AwesomeEngine/Source/Core/EntryPoint.h"
+#include "AwesomeEngine/Source/Core/FileSystem.h"
+#include "AwesomeEngine/Source/Core/Logging.h"
+#include "AwesomeEngine/Source/Core/Util/OBJLoader.h"
+#include "AwesomeEngine/Source/Core/Util/TextureLoader.h"
 
-#include "Graphics/Platform/Windows/WWindow.h"
-#include "Graphics/UI/UIInterface.h"
-#include "Graphics/VertexDescription.h"
-#include "Graphics/DebugDraw.h"
+#include "AwesomeEngine/Source/Graphics/Platform/Windows/WWindow.h"
+#include "AwesomeEngine/Source/Graphics/VertexDescription.h"
 
-#include "Samples/ModelViewer.hlsl" // This is a bit nasty... we are forced to include here the file so we can see the declarations.
+#include "ModelViewer.hlsl" // This is a bit nasty... we are forced to include here the file so we can see the declarations.
 
 #include "glm/glm.hpp"
 
@@ -35,6 +33,20 @@ ENTRY_POINT(app, "Model Viewer", false);
 void ModelViewer::Init()
 {
 	AppBase::Init();
+
+	{
+		Core::FileDevice shadersFileSystem;
+		shadersFileSystem.Identifier = "shadersrc";
+		shadersFileSystem.RootPath = "../../src/shaders/";
+		Core::FileSystem::GetInstance()->AddFileDevice(shadersFileSystem);
+	}
+	
+	{
+		Core::FileDevice dataFileSystem;
+		dataFileSystem.Identifier = "data";
+		dataFileSystem.RootPath = "../../data/";
+		Core::FileSystem::GetInstance()->AddFileDevice(dataFileSystem);
+	}	
 
 	m_NumVertices = 0;
 
@@ -65,7 +77,7 @@ void ModelViewer::Init()
 	}
 
 	// Load test texture
-	std::string texturePath = "data:Textures/test_grid.jpeg";
+	std::string texturePath = "data:textures/test_grid.jpeg";
 	Core::Texture::TextureData loadedTexture;
 	if (Core::Texture::LoadFromFile(texturePath, loadedTexture))
 	{		
@@ -80,11 +92,11 @@ void ModelViewer::Init()
 	Graphics::GraphicsPipelineDescription psoDesc;
 	psoDesc.ColorFormats[0] = m_GraphicsInterface->GetOutputFormat();
 	
-	psoDesc.VertexShader.ShaderPath = "shadersrc:Samples/ModelViewer.hlsl";
+	psoDesc.VertexShader.ShaderPath = "shadersrc:ModelViewer.hlsl";
 	psoDesc.VertexShader.ShaderEntryPoint = "VSMain";
 	psoDesc.VertexShader.Type = Graphics::ShaderType::Vertex;
 	
-	psoDesc.PixelShader.ShaderPath = "shadersrc:Samples/ModelViewer.hlsl";
+	psoDesc.PixelShader.ShaderPath = "shadersrc:ModelViewer.hlsl";
 	psoDesc.PixelShader.ShaderEntryPoint = "PSMain";
 	psoDesc.PixelShader.Type = Graphics::ShaderType::Pixel;
 
@@ -100,12 +112,6 @@ void ModelViewer::Init()
 
 void ModelViewer::Update()
 {
-	if (ImGui::Begin("Debug textures"))
-	{
-		ImGui::Image((ImTextureID)m_TestTexture.Handle, ImVec2(128, 128));
-		ImGui::End();
-	}
-
 	glm::mat4x4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4x4 proj = glm::perspectiveFov(90.0f, (float)m_Window->GetWidth(), (float)m_Window->GetHeight(), 0.1f, 100.0f);
 
@@ -127,10 +133,6 @@ void ModelViewer::Update()
 		m_GraphicsInterface->SetResource(m_TestTexture, Declarations::kg_TestTextureSlot);
 		m_GraphicsInterface->Draw(m_NumVertices, 0);
 	}
-
-	// Debug draw needs re-thinking... Don't want to have to flush manually and pass the camera, maybe pass the camera on item submissions?
-	Graphics::DebugDraw::GetInstance()->DrawWireSphere(glm::vec3(0, 4, 5), 2.0f);
-	Graphics::DebugDraw::GetInstance()->Flush(m_Constants.ViewProjection);
 }
 
 void ModelViewer::Release()

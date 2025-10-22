@@ -1,80 +1,64 @@
-project "AwesomeTriangle"
-	kind "WindowedApp"
-	language "C++"
-	location "Temp/VSFiles"
-	targetdir "Build/%{cfg.platform}/%{cfg.buildcfg}"
-	files
-	{
-		"Source/Samples/**.h",
-		"Source/Samples/TriangleSample.cpp"
-	}
-	filter "configurations:Debug"
-		symbols "On"
-		links
-		{
-			"Graphics", "Core"
-		}
-	filter "configurations:Release"
-		optimize "On"
-		links
-		{
-			"Graphics", "Core"
-		}
+workspace "awesome_examples"
+	configurations { "Debug", "Release"}
+	platforms "x64"
+	systemversion "10"
+	staticruntime "on"
+	flags {"FatalCompileWarnings"}
+	language "C++"	
+	targetdir "bin/%{cfg.platform}/%{cfg.buildcfg}"
 
-project "AwesomeCube"
-	kind "WindowedApp"
-	language "C++"
-	location "Temp/VSFiles"
-	targetdir "Build/%{cfg.platform}/%{cfg.buildcfg}"
-	files
+filter { "platforms:x64" }
+	defines { "PLATFORM_WINDOWS" }
+	disablewarnings 
 	{
-		"Source/Samples/**.h",
-		"Source/Samples/CubeSample.cpp"
+		"4006",
+		"4221"
 	}
-	filter "configurations:Debug"
-		symbols "On"
-		links
-		{
-			"Graphics", "Core"
-		}
-		postbuildcommands 
-		{
-		}
-	filter "configurations:Release"
-		optimize "On"
-		links
-		{
-			"Graphics", "Core"
-		}
-		postbuildcommands 
-		{
-		}
+	
+filter {"configurations:Debug or Release"}	
+	libdirs
+	{
+		"depen/AwesomeEngine/Build/%{cfg.platform}/%{cfg.buildcfg}"
+	}
+	links
+	{
+		"Core",
+		"Graphics"
+	}
+	includedirs 
+	{
+		"depen",
+		"depen/AwesomeEngine/Depen/GLM",
+		"depen/AwesomeEngine/Source",
+		"src/shaders"
+	}
 
-project "AwesomeModelViewer"
-	kind "WindowedApp"
-	language "C++"
-	location "Temp/VSFiles"
-	targetdir "Build/%{cfg.platform}/%{cfg.buildcfg}"
+filter {"configurations:Debug"}
+	defines
+	{
+		"CFG_DEBUG"
+	}
+	symbols "On"
+
+filter {"configurations:Release"}
+	defines
+	{
+		"CFG_RELEASE"
+	}
+	optimize "On"
+
+project "triangle"
+	location "temp/vs_files"
+	kind "WindowedApp"	
 	files
 	{
-		"Source/Samples/**.h",
-		"Source/Samples/ModelViewer.cpp"
+		"src/TriangleSample.cpp"
 	}
-	filter "configurations:Debug"
-		symbols "On"
-		links
-		{
-			"Graphics", "Core"
-		}
-		postbuildcommands 
-		{
-		}
-	filter "configurations:Release"
-		optimize "On"
-		links
-		{
-			"Graphics", "Core"
-		}
-		postbuildcommands 
-		{
-		}
+
+project "model_viewer"
+	location "temp/vs_files"
+	kind "WindowedApp"
+	files
+	{
+		"src/ModelViewer.cpp"
+	}
