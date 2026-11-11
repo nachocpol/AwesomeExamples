@@ -11,6 +11,7 @@
 #include "ModelViewer.hlsl" // This is a bit nasty... we are forced to include here the file so we can see the declarations.
 
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 class ModelViewer : public AppBase
 {

@@ -1,9 +1,7 @@
 workspace "awesome_examples"
 	configurations { "Debug", "Release"}
 	platforms "x64"
-	systemversion "10"
 	staticruntime "on"
-	flags {"FatalCompileWarnings"}
 	language "C++"	
 	targetdir "bin/%{cfg.platform}/%{cfg.buildcfg}"
 
@@ -18,12 +16,15 @@ filter { "platforms:x64" }
 filter {"configurations:Debug or Release"}	
 	libdirs
 	{
-		"depen/AwesomeEngine/Build/%{cfg.platform}/%{cfg.buildcfg}"
+		"depen/AwesomeEngine/Build/%{cfg.platform}/%{cfg.buildcfg}",
+		"depen/AwesomeEngine/Depen/dxc/lib/x64"
 	}
 	links
 	{
 		"Core",
-		"Graphics"
+		"Graphics",
+		"dxcompiler",
+		"dxil"
 	}
 	includedirs 
 	{
