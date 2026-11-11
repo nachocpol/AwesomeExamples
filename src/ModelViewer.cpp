@@ -73,7 +73,7 @@ void ModelViewer::Init()
 
 		m_NumVertices = (int)positionsBuffer.size();
 		m_VertexBuffer = m_GraphicsInterface->CreateBuffer(
-			Graphics::BufferType::GPUBuffer, Graphics::CPUAccess::None, Graphics::GPUAccess::Read, sizeof(VertexData), m_NumVertices, positionsBuffer.data()
+			Graphics::BufferType::GPUBuffer, Graphics::CPUAccess::None, Graphics::GPUAccess::Read, m_NumVertices, sizeof(VertexData), positionsBuffer.data()
 		);
 	}
 

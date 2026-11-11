@@ -1,3 +1,5 @@
 .vs
 bin
 temp
+premake5.lua
+awesome_examples.slnx
